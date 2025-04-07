@@ -10,16 +10,20 @@ public class BiMap<K, V> {
     private final Map<V, K> inverseMap = new HashMap<>();
 
     public V put(K key, V value) {
-        if (map.containsKey(key) || inverseMap.containsKey(value)) {
-            throw new IllegalArgumentException("No duplicated Keys or Values allowed");
-        }
+        handleDuplicates(key, value);
         map.put(key, value);
         inverseMap.put(value, key);
-
         return value;
     }
 
+    private void handleDuplicates(K key, V value) {
+        if (map.containsKey(key) || inverseMap.containsKey(value)) {
+            throw new IllegalArgumentException("No duplicated Keys or Values allowed");
+        }
+    }
+
     public void putAll(Map<K, V> map) {
+        map.forEach(this::handleDuplicates);
         map.forEach(this::put);
     }
 
